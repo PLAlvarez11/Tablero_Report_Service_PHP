@@ -15,6 +15,11 @@ services:
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_DB=${REDIS_DB:-0}
       - REDIS_TTL_SECONDS=${REDIS_TTL_SECONDS:-86400}
+    healthcheck:
+      test: ["CMD","wget","-q","-O","-","http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
     ports:
       - "5001:80"
     networks: [analytics-net]
