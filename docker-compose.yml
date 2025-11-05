@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  report-service-php:
+    build: .
+    container_name: report-service-php
+    restart: unless-stopped
+    environment:
+      - DATA_SOURCE=DW
+      - DW_HOST=${DW_HOST:-postgres-dw}
+      - DW_PORT=${DW_PORT:-5432}
+      - DW_DB=${DW_DB:-BALONCESTO_DW}
+      - DW_USER=${DW_USER:-dw_report}
+      - DW_PASSWORD=${DW_PASSWORD:-dw_report_2025!}
+      - REDIS_HOST=${REDIS_HOST:-redis-cache}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_DB=${REDIS_DB:-0}
+      - REDIS_TTL_SECONDS=${REDIS_TTL_SECONDS:-86400}
+    ports:
+      - "5001:80"
+    networks: [analytics-net]
+networks:
+  analytics-net:
+    external: true
