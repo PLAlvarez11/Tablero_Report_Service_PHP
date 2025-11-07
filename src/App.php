@@ -15,13 +15,19 @@ final class App
         }
 
         $app = AppFactory::create();
-        // CORS sencillo para pruebeseillas
-        $app->add(function ($req, $handler) {
+
+        $allowed = explode(',', getenv('CORS_ALLOWED_ORIGINS') ?: 'preguntarVictor por el dominio');
+        $app->add(function ($req, $handler) use ($allowed) {
+            $origin = $req->getHeaderLine('Origin');
             $res = $handler->handle($req);
-            return $res
-                ->withHeader('Access-Control-Allow-Origin', '*')
-                ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-                ->withHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+            if ($origin && in_array($origin, $allowed, true)) {
+                return $res
+                    ->withHeader('Access-Control-Allow-Origin', $origin)
+                    ->withHeader('Vary', 'Origin')
+                    ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+                    ->withHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+            }
+            return $res;
         });
 
         (new Routes())->register($app);

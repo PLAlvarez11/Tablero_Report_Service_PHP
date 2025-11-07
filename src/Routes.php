@@ -73,5 +73,11 @@ final class Routes
             $res->getBody()->write(json_encode(["cached"=>false,"data"=>$data]));
             return $res->withHeader('Content-Type','application/json');
         });
+
+        $app->group('/Reporte', function(SlimApp $grp){
+        $grp->post('/HistorialPartidos', /* ... */);
+        $grp->post('/RosterPorPartido',  /* ... */);
+        })->add(new Auth(['report_reader'])); 
+
     }
 }
